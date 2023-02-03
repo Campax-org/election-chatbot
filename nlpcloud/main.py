@@ -1,8 +1,15 @@
 
 import nlpcloud
 
-API_KEY = "4329be765d81cb0c809270d9911cb3798c541fd5"
+from pandas import Series, DataFrame
+import pandas as pd
+import re
+from nltk import tokenize
 
+import nltk
+nltk.download('punkt')
+
+API_KEY = "4329be765d81cb0c809270d9911cb3798c541fd5"
 
 
 def summarize(txt, language):
@@ -31,6 +38,24 @@ def generate(txt, language):
     print(response)
 
 
+def train():
+    df = pd.read_csv('../data/transcript_1000.csv')
+
+    for index, row in df.iterrows():
+        t = row['Text']
+        clean_text = re.sub(re.compile('<.*?>|\[[A-Z]*\]'), '', t.replace('\n', ' '))
+        print(clean_text)
+
+        sentences = tokenize.sent_tokenize(clean_text)
+
+        for s in sentences:
+            client = nlpcloud.Client("finetuned-gpt-neox-20b", API_KEY, gpu=True)
+            response = client.chatbot(s, 
+            context="""Dies ist eine Diskussion über Parlamentswahlen basierend auf den Daten von parlament.ch"""
+            )
+            print(response)
+
+
 if __name__ == '__main__':
 
     qs = ["Wer engagiert sich am meisten für Gleichstellungspolitik in Bern?",
@@ -41,9 +66,10 @@ if __name__ == '__main__':
     "Welcher Nationalrat*in hat gegen Sanktionen für den Iran gestimmt?"
     ]
 
-    for q in qs:
-        q = "Wer engagiert sich am meisten für Gleichstellungspolitik in Bern?"
-        speak(q, "de")
+    train()
+    #for q in qs:
+    #    q = "Wer engagiert sich am meisten für Gleichstellungspolitik in Bern?"
+    #    speak(q, "de")
 
 
 
