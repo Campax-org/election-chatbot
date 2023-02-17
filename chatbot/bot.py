@@ -10,7 +10,11 @@ from telegram.ext import (
 # Connect to our data (TODO: use an API-module)
 import nlpcloud
 from pandas import read_csv
+
 Party = read_csv('../data/Party.csv')
+
+Vote = read_csv('../data/Vote.csv')
+Vote.dropna(subset=['BusinessAuthor'], inplace=True)
 
 # Private tokens for our demo (TODO: store in environment!)
 API_KEY = "4329be765d81cb0c809270d9911cb3798c541fd5"
@@ -24,6 +28,26 @@ async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def party(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     txt = Party.sample(n=1).get('PartyName').values[0]
     await update.message.reply_text(txt)
+
+# Get votes by a politician
+async def vote(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    qry = ' '.join(context.args).lower()
+    if not qry:
+        print("No query")
+        return
+    print('Vote', qry)
+    votes = Vote[Vote['BusinessAuthor'].str.lower().str.contains(qry)]
+    if votes.count()[0] > 0:
+        t = '3 / ' + str(votes.count()[0])
+        for index, row in votes.sample(n=3).iterrows():
+            t = t + '\n'
+            t = t + '- ' + row['BusinessTitle']
+            if row['SessionName']:
+                t = t + ' (' + row['SessionName'] + ')'
+    else:
+        t = 'No results'
+    await update.message.reply_text(t)
+
 
 # Say something smart
 async def parl(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -68,14 +92,15 @@ app = ApplicationBuilder().token(TELEGRAM_KEY).build()
 nlpcli = nlpcloud.Client("finetuned-gpt-neox-20b", API_KEY, gpu=True)
 
 if __name__ == '__main__':
-    
-    # Add inline support
-    app.add_handler(InlineQueryHandler(inline_parl))
 
     # Add bot commands
     app.add_handler(CommandHandler("hello", hello))
     app.add_handler(CommandHandler("party", party))
     app.add_handler(CommandHandler("parl",  parl))
+    app.add_handler(CommandHandler("vote",  vote))
+    
+    # Add inline support
+    app.add_handler(InlineQueryHandler(inline_parl))
     
     # Finally add 404
     app.add_handler(MessageHandler(filters.COMMAND, unknown))
