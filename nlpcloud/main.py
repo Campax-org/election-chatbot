@@ -9,10 +9,11 @@ from nltk import tokenize
 import nltk
 
 from pprint import pprint
+from decouple import config
+
 #nltk.download('punkt')
 
-API_KEY = "4329be765d81cb0c809270d9911cb3798c541fd5"
-
+API_KEY = config('NLP_CLOUD_API_KEY')
 
 
 # What needed was experinemts

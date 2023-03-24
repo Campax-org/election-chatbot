@@ -10,6 +10,9 @@ from telegram.ext import (
 # Connect to our data (TODO: use an API-module)
 import nlpcloud
 from pandas import read_csv
+from decouple import config
+
+
 
 Party = read_csv('../data/Party.csv')
 
@@ -17,8 +20,8 @@ Vote = read_csv('../data/Vote.csv')
 Vote.dropna(subset=['BusinessAuthor'], inplace=True)
 
 # Private tokens for our demo (TODO: store in environment!)
-API_KEY = "4329be765d81cb0c809270d9911cb3798c541fd5"
-TELEGRAM_KEY = "6146055236:AAG87qRlGXkXLJkVeDagYJcvlg9CyPZSqDE"
+API_KEY = config('NLP_CLOUD_API_KEY')
+TELEGRAM_KEY = config('TELEGRAM_KEY')
 
 # Quick test routine
 async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

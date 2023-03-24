@@ -1,3 +1,4 @@
 telegram
 pandas
 nlpcloud
+python-decouple

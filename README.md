@@ -12,17 +12,25 @@ Scructure (folder == service | module)
 
 
 
-## Using bot
-
-chatbot -> bot.py
+## Using Telegram bot
 
 Run it 
 
 ```
+cd chatbot
 python3 bot.py
 ```
 
 Make sure you set the variables from .env
+and then:
+commands and respective handlers:
+**vote** - reads the votes from the scraped data 
+**parl** - send request
+
+Within the telegram bot the commands are
+
+`/parl YOUR QUERY`
+`/vote NAME OF THE POLITICIAL`
 
 
 
