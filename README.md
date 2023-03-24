@@ -11,6 +11,7 @@ Scructure (folder == service | module)
 - scraper - scraper using scrapy to scrape pariament.ch data
 
 
+Deployed as telegram chatbot [here](https://t.me/CampaxElectionBot)
 
 ## Using Telegram bot
 
@@ -33,10 +34,41 @@ Within the telegram bot the commands are
 `/vote NAME OF THE POLITICIAL`
 
 
+## Using scraper
+
+For examples - you can relate to:
+
+```/scraper/Collect_data_for_Elections.ipynb```
+```/scraper/README.md```
+
+The basic approach would be
+```
+scrap = Scraper()
+df_party = scrap.get('ENTITY NAME')
+#or
+df_transcript_count = scrap.count('Transcript')
+```
+
+Where ENTITY NAME is taken from [here](https://ws.parlament.ch/odata.svc/)
+Name of the **collection**
+
+see or run ```pythin3 craper/test_scraper.py```
+It will save data to the data directory
+With this data we then can decide - how do we make use of it to contrinute to make the chatbot smarter.
 
 
-# Draft and log
+### NLP cloud
+In this section we find the scripts we used to train, test and use the nlpcloud.com library
+We tried "summarize" "question" and "text appeoaches
 
+The bot script uses **finetuned-gpt-neox-20b** model - and the method called "chatbot"
+
+See ```/nlpcloud/main.py -> def speak()``` method
+
+Actually you can refer to [NLP cloud documentation](https://docs.nlpcloud.com/#introduction). It's quite good and exensive.
+
+
+Good luck with the challenge!
 
 # before the training
 
