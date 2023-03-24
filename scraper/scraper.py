@@ -3,7 +3,7 @@
 import os
 
 import pandas as pd
-import urllib
+import urllib.request
 import xml.etree.ElementTree as ET
 import io
 import itertools as IT
