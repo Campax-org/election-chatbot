@@ -1,12 +1,29 @@
 
+# About
+
 This is the Election chat box
 
 Scructure (folder == service | module)
 
 - chatbot service - so far telegram bot and then more
 - data storage - temp location for the data
-- nlp cloud (this includes experiments with chatbot, text generation, 
+- nlp cloud (this includes experiments with chatbot, text generation etc) 
 - scraper - scraper using scrapy to scrape pariament.ch data
+
+
+
+## Using bot
+
+chatbot -> bot.py
+
+Run it 
+
+```
+python3 bot.py
+```
+
+Make sure you set the variables from .env
+
 
 
 

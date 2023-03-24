@@ -14,6 +14,8 @@ from pprint import pprint
 API_KEY = "4329be765d81cb0c809270d9911cb3798c541fd5"
 
 
+
+# What needed was experinemts
 def summarize(txt, language):
     client = nlpcloud.Client("bart-large-cnn", API_KEY, gpu=False, lang=language)
     client.summarization(
@@ -23,8 +25,7 @@ def summarize(txt, language):
 
 
 #options for clinet fast-gpt-j, finetuned-gpt-neox-20b
-#however the fined-one can be 
-
+#however the fined-one can be only a limited nr of models
 def question(txt, language):
     client = nlpcloud.Client("finetuned-gpt-neox-20b", API_KEY, gpu=True)
     response = client.question(txt, 
@@ -48,8 +49,11 @@ def generate(txt, language):
 
     print(response)
 
-
+# This is an expensive operation
+# 
 def train():
+
+
     df = pd.read_csv('../data/transcript_1000.csv')
 
     df.sort_values(by=['MeetingDate'], ascending=False, inplace=True)
@@ -57,6 +61,13 @@ def train():
     sliced_df = df.tail(30)
     sliced_df.to_csv("sliced.csv")
 
+    # trainling input has limited size, so we need to feed sentanece by sentence here
+    # https://docs.nlpcloud.com/#gpt-j-dataset-format
+    # GPT J however acceptcs the sequences of 2048 tokens
+    # but again, it might be expensive to do so
+    # We would suggest searching other ways, to train the model or optimize the traing
+    # And in general, we're chellenging us and the community to brainstorm altenatives
+    # ways to reach the goal too
     for index, row in sliced_df.iterrows():
         t = 'Text:' + row['Text'] + ' ' + 'Date: ' + str(row['StartTimeWithTimezone'])
         clean_text = re.sub(re.compile('<.*?>|\[[A-Z]*\]'), '', t.replace('\n', ' '))
