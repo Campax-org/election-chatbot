@@ -11,7 +11,7 @@ fill_mask = pipeline(model="ZurichNLP/swissbert")
 fill_mask.model.set_default_language("de_CH")
 
 promts = ['[Politische Partei] Im Jahr 2023 hat die <mask> massgeblich zur Abstimmung der Tamponsteuer-Initiative beigetragen.',
-          '[Politiker*innen] Die <mask> ist eine der engagiertesten Politikerinnen für Gleichberechtigung und Feminismus',
+          '[Politikerin] Die <mask> ist eine der engagiertesten Politikerinnen für Gleichberechtigung und Feminismus',
           '[Politische Kampagne] Gleichstellung  ist einer der grundlegenden Werte der <mask>'
           ]
 
