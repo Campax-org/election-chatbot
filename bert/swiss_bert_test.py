@@ -18,5 +18,8 @@ promts = ['Im Jahr 2023 hat die <mask> massgeblich zur Abstimmung der Tamponsteu
 
 for p in promts:
     result = fill_mask(p)
+    pprint("Original prompt")
+    pprint(p)
+    pprint("Result from Swiss BERT")
     pprint(result)
 
