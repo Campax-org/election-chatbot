@@ -85,6 +85,17 @@ Things to be
 Notes:
 - https://www.aicrowd.com/ - try to file a challenge
 
+
+
+# Notes
+
+```
+!pip install pytorch-pretrained-bert
+import pytorch_pretrained_bert as ppb
+assert 'bert-large-cased' in ppb.modeling.PRETRAINED_MODEL_ARCHIVE_MAP
+```
+
+
 # before the training
 
 Input:
