@@ -75,9 +75,9 @@ Good luck with the challenge!
 
 1. [Make progress] Swiss BERT model https://vamvas.ch/introducing-swissbert
 Things to be
-- Build it up
-- Test it
-- Augment / Train with data
+- Build it up - Done
+- Test it - Done
+- Augment / Train with data - Partially Done / TBD
 
 2. [To research] Next - generate questions for the scraped data -> Build an index
 
