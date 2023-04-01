@@ -3,3 +3,5 @@ pandas
 nlpcloud
 python-decouple
 scrapy
+tensorflow
+huggingface_hub

@@ -70,6 +70,21 @@ Actually you can refer to [NLP cloud documentation](https://docs.nlpcloud.com/#i
 
 Good luck with the challenge!
 
+
+# Challenge progess https://bd.hack4socialgood.ch/
+
+1. [Make progress] Swiss BERT model https://vamvas.ch/introducing-swissbert
+Things to be
+- Build it up
+- Test it
+- Augment / Train with data
+
+2. [To research] Next - generate questions for the scraped data -> Build an index
+
+
+Notes:
+- https://www.aicrowd.com/ - try to file a challenge
+
 # before the training
 
 Input:
