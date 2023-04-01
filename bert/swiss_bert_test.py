@@ -1,5 +1,6 @@
 # 
 
+from pprint import pprint
 
 from transformers import pipeline
 
@@ -11,3 +12,6 @@ fill_mask.model.set_default_language("de_CH")
 
 
 result = fill_mask("<mask> für Gleichstellungspolitik in Bern")
+
+pprint(result)
+
