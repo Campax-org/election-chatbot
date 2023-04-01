@@ -1,5 +1,8 @@
 
+
+![Swiss Election Bot Campax](https://campax.org/wp-content/uploads/2022/09/cropped-campax_logo-1.png "Swiss Election Bot Campax").
 # About
+
 
 This is the Election chat box
 
