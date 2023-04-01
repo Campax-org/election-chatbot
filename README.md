@@ -96,7 +96,100 @@ assert 'bert-large-cased' in ppb.modeling.PRETRAINED_MODEL_ARCHIVE_MAP
 ```
 
 
-# before the training
+# Swiss BERT
+```
+'Original prompt'
+('[Politische Partei] Im Jahr 2023 hat die <mask> massgeblich zur Abstimmung '
+ 'der Tamponsteuer-Initiative beigetragen.')
+'Result from Swiss BERT'
+[{'score': 0.3236805200576782,
+  'sequence': 'Politische Partei Im Jahr 2023 hat die SVP massgeblich zur '
+              'Abstimmung der Tamponsteuer-Initiative beigetragen.',
+  'token': 741,
+  'token_str': 'SVP'},
+ {'score': 0.25119855999946594,
+  'sequence': 'Politische Partei Im Jahr 2023 hat die SP massgeblich zur '
+              'Abstimmung der Tamponsteuer-Initiative beigetragen.',
+  'token': 1017,
+  'token_str': 'SP'},
+ {'score': 0.15169617533683777,
+  'sequence': 'Politische Partei Im Jahr 2023 hat die Partei massgeblich zur '
+              'Abstimmung der Tamponsteuer-Initiative beigetragen.',
+  'token': 1028,
+  'token_str': 'Partei'},
+ {'score': 0.04907562583684921,
+  'sequence': 'Politische Partei Im Jahr 2023 hat die GLP massgeblich zur '
+              'Abstimmung der Tamponsteuer-Initiative beigetragen.',
+  'token': 12794,
+  'token_str': 'GLP'},
+ {'score': 0.04162818193435669,
+  'sequence': 'Politische Partei Im Jahr 2023 hat die Jungpartei massgeblich '
+              'zur Abstimmung der Tamponsteuer-Initiative beigetragen.',
+  'token': 46706,
+  'token_str': 'Jungpartei'}]
+'Original prompt'
+('[Politikerin] Die <mask> ist eine der engagiertesten Politikerinnen für '
+ 'Gleichberechtigung und Feminismus')
+'Result from Swiss BERT'
+[{'score': 0.33690086007118225,
+  'sequence': 'Politikerin Die Autorin ist eine der engagiertesten '
+              'Politikerinnen für Gleichberechtigung und Feminismus',
+  'token': 15310,
+  'token_str': 'Autorin'},
+ {'score': 0.21666944026947021,
+  'sequence': 'Politikerin Die Schweizerin ist eine der engagiertesten '
+              'Politikerinnen für Gleichberechtigung und Feminismus',
+  'token': 14039,
+  'token_str': 'Schweizerin'},
+ {'score': 0.06902963668107986,
+  'sequence': 'Politikerin Die Frau ist eine der engagiertesten Politikerinnen '
+              'für Gleichberechtigung und Feminismus',
+  'token': 622,
+  'token_str': 'Frau'},
+ {'score': 0.06879016757011414,
+  'sequence': 'Politikerin Die Nationalrätin ist eine der engagiertesten '
+              'Politikerinnen für Gleichberechtigung und Feminismus',
+  'token': 20190,
+  'token_str': 'Nationalrätin'},
+ {'score': 0.03002847544848919,
+  'sequence': 'Politikerin Die Deutsche ist eine der engagiertesten '
+              'Politikerinnen für Gleichberechtigung und Feminismus',
+  'token': 3748,
+  'token_str': 'Deutsche'}]
+'Original prompt'
+('[Politische Kampagne] Gleichstellung  ist einer der grundlegenden Werte der '
+ '<mask>')
+'Result from Swiss BERT'
+[{'score': 0.24675796926021576,
+  'sequence': 'Politische Kampagne Gleichstellung ist einer der grundlegenden '
+              'Werte der Frau',
+  'token': 622,
+  'token_str': 'Frau'},
+ {'score': 0.18075180053710938,
+  'sequence': 'Politische Kampagne Gleichstellung ist einer der grundlegenden '
+              'Werte der Gesellschaft',
+  'token': 2153,
+  'token_str': 'Gesellschaft'},
+ {'score': 0.16865766048431396,
+  'sequence': 'Politische Kampagne Gleichstellung ist einer der grundlegenden '
+              'Werte der Schweiz',
+  'token': 214,
+  'token_str': 'Schweiz'},
+ {'score': 0.0794895812869072,
+  'sequence': 'Politische Kampagne Gleichstellung ist einer der grundlegenden '
+              'Werte der Frauen',
+  'token': 573,
+  'token_str': 'Frauen'},
+ {'score': 0.05319949984550476,
+  'sequence': 'Politische Kampagne Gleichstellung ist einer der grundlegenden '
+              'Werte der Schweizerinnen',
+  'token': 11577,
+  'token_str': 'Schweizerinnen'}]
+```
+
+
+
+# NLP before the training
 
 Input:
 
