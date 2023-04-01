@@ -5,3 +5,6 @@ python-decouple
 scrapy
 tensorflow
 huggingface_hub
+transformers[tf-cpu]
+transformers[flax]
+
