@@ -685,3 +685,53 @@ async def validate_single_component(component_name: str) -> dict[str, Any]:
         "validation": validation_result,
         "passed": validation_result.get("score", 0.0) >= agent.persistence.validation_threshold,
     }
+
+
+# LLM Model-Switching API Endpoints
+@router.get("/scheduler/llm-statistics")
+async def get_llm_statistics():
+    """Zeige LLM-Model-Switching Statistiken"""
+    from documentation.llm_router import LLMRouter, LLMProvider
+    from datetime import datetime
+    
+    try:
+        router = LLMRouter()
+        
+        stats = {
+            "timestamp": datetime.now().isoformat(),
+            "overall": router.get_statistics(),
+            "by_provider": {}
+        }
+        
+        # Statistiken pro Provider
+        for provider in LLMProvider:
+            stats["by_provider"][provider.value] = router.get_statistics(provider)
+        
+        return {"status": "success", "statistics": stats}
+    
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@router.post("/scheduler/llm-switch-model")
+async def switch_llm_model(provider: str, enabled: bool = True):
+    """Aktiviere/Deaktiviere LLM-Model"""
+    from documentation.llm_router import LLMRouter, LLMProvider
+    
+    try:
+        router = LLMRouter()
+        
+        if provider.upper() not in [p.value.upper() for p in LLMProvider]:
+            return {"status": "error", "message": f"Unknown provider: {provider}"}
+        
+        for p in LLMProvider:
+            if p.value == provider.lower():
+                if p in router.models:
+                    router.models[p].enabled = enabled
+                    status = "enabled" if enabled else "disabled"
+                    return {"status": "success", "message": f"{provider} {status}"}
+        
+        return {"status": "error", "message": f"Provider not registered: {provider}"}
+    
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

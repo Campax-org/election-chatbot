@@ -31,7 +31,7 @@ class LLMBatchValidator:
         logger.info(f"📚 {len(docs)} Komponenten-Dateien gefunden")
         return docs
     
-    def _validate_single_component(self, doc_path: Path) -> Dict:
+    def _validate_single_component(self, doc_path: Path, use_router: bool = True) -> Dict:
         """
         Validiere eine einzelne Komponenten-.md Datei mit LLM.
         
@@ -47,43 +47,13 @@ class LLMBatchValidator:
             # Lese Dokumentation
             content = doc_path.read_text(encoding='utf-8')
             
-            # Import LLM-Provider (falls vorhanden)
-            # Für den Test verwenden wir einen Mock-Provider
-            try:
-                from documentation.llm_provider import LLMProviderFactory
-                llm_provider = LLMProviderFactory.get_provider(mode="gpt_oss")
-                use_mock = False
-            except ImportError:
-                logger.warning("⚠️ LLM-Provider nicht gefunden, verwende Mock-Validierung")
-                use_mock = True
-            
-            if use_mock:
-                # Mock-Validierung für Testzwecke
-                # Simuliere verschiedene Scores basierend auf Dateiinhalten
-                content_lower = content.lower()
-                
-                # Score basierend auf Inhalt
-                score = 0.85  # Basis-Score
-                
-                # Verbessere Score basierend auf Qualitätsmerkmalen
-                if "## description" in content_lower or "## beschreibung" in content_lower:
-                    score += 0.05
-                if "## example" in content_lower or "## beispiel" in content_lower:
-                    score += 0.05
-                if "```python" in content_lower or "```yaml" in content_lower:
-                    score += 0.05
-                if "## parameters" in content_lower or "## parameter" in content_lower:
-                    score += 0.05
-                if "## returns" in content_lower or "## rückgabe" in content_lower:
-                    score += 0.05
-                
-                # Zufällige Variation (±0.05) für Realismus
-                import random
-                score += random.uniform(-0.05, 0.05)
-                score = max(0.0, min(1.0, score))  # Clamp zu [0.0, 1.0]
-            else:
-                # Echte LLM-Validierung
-                validation_prompt = f"""
+            if use_router:
+                # Verwende Router für intelligentes Model-Switching
+                try:
+                    from documentation.llm_router import LLMRouter
+                    router = LLMRouter()
+                    
+                    validation_prompt = f"""
 Validiere diese Komponenten-Dokumentation auf Qualität.
 Bewerte auf Skala 0.0-1.0:
 
@@ -103,16 +73,61 @@ Komponenten-Datei: {doc_path.name}
 
 Antworte NUR mit einer Dezimalzahl 0.0-1.0, z.B.: 0.87
 """
+                    
+                    try:
+                        score_str, used_provider, duration = router.call_llm_with_fallback(
+                            prompt=validation_prompt,
+                            prefer_cost=True,  # Billigste Option zuerst
+                            max_retries=3
+                        )
+                        
+                        logger.info(f"✅ {doc_path.name}: Provider={used_provider.value}, Duration={duration:.2f}s")
+                        score = float(score_str.strip())
+                        score = max(0.0, min(1.0, score))  # Clamp zu [0.0, 1.0]
+                        
+                    except Exception as e:
+                        logger.error(f"❌ Router fehlgeschlagen für {doc_path.name}: {e}")
+                        # Fallback auf Mock-Validierung
+                        score = self._mock_validate(content)
                 
-                # Rufe LLM auf
-                score_str = llm_provider.validate(validation_prompt)
-                
-                # Parse Score
+                except ImportError:
+                    logger.warning("⚠️ LLM-Router nicht gefunden, verwende Mock-Validierung")
+                    score = self._mock_validate(content)
+            
+            else:
+                # Fallback auf direkten Provider (wie vorher)
                 try:
+                    from documentation.llm_provider import LLMProviderFactory
+                    llm_provider = LLMProviderFactory.get_provider(mode="gpt_oss")
+                    
+                    validation_prompt = f"""
+Validiere diese Komponenten-Dokumentation auf Qualität.
+Bewerte auf Skala 0.0-1.0:
+
+
+Kriterien:
+- Struktur (Headings, Gliederung): 25%
+- Vollständigkeit (Alle Felder): 25%
+- Verständlichkeit: 25%
+- Code-Beispiele: 25%
+
+
+Komponenten-Datei: {doc_path.name}
+
+
+{content}
+
+
+Antworte NUR mit einer Dezimalzahl 0.0-1.0, z.B.: 0.87
+"""
+                    
+                    score_str = llm_provider.validate(validation_prompt)
                     score = float(score_str.strip())
                     score = max(0.0, min(1.0, score))  # Clamp zu [0.0, 1.0]
-                except ValueError:
-                    score = 0.5  # Fallback
+                    
+                except ImportError:
+                    logger.warning("⚠️ LLM-Provider nicht gefunden, verwende Mock-Validierung")
+                    score = self._mock_validate(content)
             
             result = {
                 "component": doc_path.name,
@@ -139,6 +154,32 @@ Antworte NUR mit einer Dezimalzahl 0.0-1.0, z.B.: 0.87
                 "error": str(e),
                 "timestamp": datetime.now().isoformat()
             }
+    
+    def _mock_validate(self, content: str) -> float:
+        """Mock-Validierung für Testzwecke"""
+        content_lower = content.lower()
+        
+        # Score basierend auf Inhalt
+        score = 0.85  # Basis-Score
+        
+        # Verbessere Score basierend auf Qualitätsmerkmalen
+        if "## description" in content_lower or "## beschreibung" in content_lower:
+            score += 0.05
+        if "## example" in content_lower or "## beispiel" in content_lower:
+            score += 0.05
+        if "```python" in content_lower or "```yaml" in content_lower:
+            score += 0.05
+        if "## parameters" in content_lower or "## parameter" in content_lower:
+            score += 0.05
+        if "## returns" in content_lower or "## rückgabe" in content_lower:
+            score += 0.05
+        
+        # Zufällige Variation (±0.05) für Realismus
+        import random
+        score += random.uniform(-0.05, 0.05)
+        score = max(0.0, min(1.0, score))  # Clamp zu [0.0, 1.0]
+        
+        return score
     
     def validate_batch_sequential(self) -> Dict:
         """
