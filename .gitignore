@@ -59,4 +59,4 @@ htmlcov/
 .pytest_cache/
 
 # 1_generic submodule (contains its own git repo)
-1_generic/
+# 1_generic/
